@@ -2,11 +2,6 @@
 
 A production-grade URL shortener built with Spring Boot, Redis, PostgreSQL, and React.
 
-## Live Demo
-> Deploy link here (Render/Railway)
-
----
-
 ## Architecture
 
 ```
@@ -121,20 +116,4 @@ Expiry stored in DB and used to set Redis TTL. A scheduled job runs hourly to de
 
 ---
 
-## Interview Q&A
 
-**Q: How does the caching work?**
-Cache-aside pattern. On redirect: check Redis first. If miss, query PostgreSQL, store in Redis with TTL, return URL. This keeps the cache warm for popular URLs.
-
-**Q: How do you handle hash collisions?**
-Generate random Base62 code, check DB for existence, retry if collision (max 10 attempts). With 7 chars and 3.5 trillion possibilities, collisions are extremely rare.
-
-**Q: How would you scale this to millions of users?**
-1. Multiple Spring Boot instances behind a load balancer
-2. Redis cluster for distributed caching
-3. PostgreSQL read replicas for analytics queries
-4. CDN for the redirect layer
-5. Async analytics tracking (Kafka queue)
-
-**Q: Why PostgreSQL over MySQL?**
-Better support for JSONB (for future analytics), excellent indexing, and strong ACID compliance. Both would work fine here.
